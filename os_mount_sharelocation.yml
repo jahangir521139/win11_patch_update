@@ -1,0 +1,37 @@
+---
+- name: Mount Windows 11 ISO from network share
+  hosts: 172.29.10.225
+  gather_facts: no
+  become: yes
+
+  vars:
+    network_path: "\\\\172.25.100.100\\os\\Win11_25H2_English_x64.iso"
+    network_share: "\\\\172.25.100.100\\os"
+
+  tasks:
+
+    - name: Mount ISO directly from network share
+      ansible.windows.win_shell: |
+        Mount-DiskImage -ImagePath "{{ network_path }}"
+      register: mount_result
+
+    - name: Get mounted drive letter
+      ansible.windows.win_shell: |
+        (Get-Volume | Where-Object DriveType -eq 'CD-ROM').DriveLetter
+      register: drive_letter
+
+    - debug:
+        msg: "ISO mounted on drive {{ drive_letter.stdout }}:"
+
+    # চাইলে এখান থেকে upgrade চালানো যাবে:
+    - name: Start Windows 11 upgrade from mounted ISO
+      ansible.windows.win_command: >
+        {{ drive_letter.stdout }}:\setup.exe /auto upgrade /quiet /noreboot
+      args:
+        chdir: "{{ drive_letter.stdout }}:\\"
+      register: upgrade
+
+    - name: Reboot after upgrade
+      ansible.windows.win_reboot:
+        reboot_timeout: 7200
+        msg: "Rebooting after Windows 11 25H2 upgrade"
