@@ -2,7 +2,7 @@
 - name: Mount Windows 11 ISO from network share
   hosts: 172.29.10.225
   gather_facts: no
-  become: yes
+  # become: yes   <-- REMOVE THIS
 
   vars:
     network_path: "\\\\172.25.100.100\\os\\Win11_25H2_English_x64.iso"
@@ -23,7 +23,6 @@
     - debug:
         msg: "ISO mounted on drive {{ drive_letter.stdout }}:"
 
-    # চাইলে এখান থেকে upgrade চালানো যাবে:
     - name: Start Windows 11 upgrade from mounted ISO
       ansible.windows.win_command: >
         {{ drive_letter.stdout }}:\setup.exe /auto upgrade /quiet /noreboot
