@@ -1,6 +1,6 @@
 ---
 - name: Mount Windows 11 ISO from network share
-  hosts: 172.29.10.225
+  hosts: all
   gather_facts: no
   # become: yes   <-- REMOVE THIS
 
