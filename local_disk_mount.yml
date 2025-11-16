@@ -1,22 +1,42 @@
 ---
-- name: In-place upgrade from Windows 11 21H2 to 24H2
+- name: In-place upgrade Windows 11 21H2 → 25H2
   hosts: all
   gather_facts: no
   tasks:
 
+    - name: Ensure temp directory exists
+      win_file:
+        path: C:\Temp
+        state: directory
+
+    - name: Check if ISO exists
+      win_shell: Test-Path "C:\OS\Win11_25H2_English_x64.iso"
+      register: iso_exists
+      failed_when: iso_exists.stdout != "True"
+
     - name: Mount local ISO
-      win_shell: Mount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64iso"
+      win_shell: |
+        $iso = "C:\OS\Win11_25H2_English_x64.iso"
+        Mount-DiskImage -ImagePath $iso
+      become: yes
 
     - name: Get mounted ISO drive letter
       win_shell: |
-        (Get-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64" | Get-Volume).DriveLetter
+        (Get-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso" | Get-Volume).DriveLetter
       register: iso_drive
 
     - name: Start Windows 11 setup silently
       win_shell: |
         {{ iso_drive.stdout }}:\setup.exe /auto upgrade /quiet /noreboot /compat IgnoreWarning
+      become: yes
 
-    - name: Reboot to complete upgrade
+    - name: Reboot machine to complete upgrade
       win_reboot:
-        msg: "Rebooting to complete Windows 11 24H2 upgrade"
+        msg: "Rebooting to complete Windows 11 25H2 upgrade"
         reboot_timeout: 3600
+
+    - name: Dismount ISO after upgrade (optional)
+      win_shell: |
+        Dismount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso"
+      ignore_errors: yes
+      become: yes
