@@ -11,7 +11,7 @@
 
     - name: Map UNC share (Z:)
       win_shell: |
-        $pass = ConvertTo-SecureString "Root@1234" -AsPlainText -Force
+        $pass = ConvertTo-SecureString "Ucbl@1234567" -AsPlainText -Force
         $cred = New-Object System.Management.Automation.PSCredential("Administrator", $pass)
         New-PSDrive -Name Z -PSProvider FileSystem -Root "\\172.29.10.216\os" -Credential $cred -Persist -ErrorAction Stop
 
