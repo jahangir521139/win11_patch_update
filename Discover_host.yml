@@ -1,9 +1,10 @@
 ---
-- name: Discover Windows hosts in network
+- name: Discover Windows hosts
   hosts: localhost
   gather_facts: no
   vars:
     subnet: "172.29.10.0/24"
+
   tasks:
     - name: Scan subnet for WinRM port (5985)
       community.general.nmap:
@@ -12,11 +13,11 @@
         state: present
       register: scan_result
 
-    - name: Extract available IPs
+    - name: Extract alive hosts
       set_fact:
         alive_hosts: "{{ scan_result.results | json_query('[?status.state==`open`].host') }}"
 
-    - name: Save dynamic inventory
+    - name: Write dynamic inventory
       copy:
         dest: "./windows_dynamic.ini"
         content: |
