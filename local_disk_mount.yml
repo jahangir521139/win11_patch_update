@@ -5,11 +5,11 @@
   tasks:
 
     - name: Mount local ISO
-      win_shell: Mount-DiskImage -ImagePath "C:\OS\Win11_21H2_24H2.iso"
+      win_shell: Mount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64iso"
 
     - name: Get mounted ISO drive letter
       win_shell: |
-        (Get-DiskImage -ImagePath "C:\OS\Win11_21H2_24H2.iso" | Get-Volume).DriveLetter
+        (Get-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64" | Get-Volume).DriveLetter
       register: iso_drive
 
     - name: Start Windows 11 setup silently
