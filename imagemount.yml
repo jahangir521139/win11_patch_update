@@ -1,0 +1,19 @@
+---
+- name: In-place upgrade from Windows 10 to Windows 11
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Mount Windows 11 ISO
+      win_command: |
+        PowerShell Mount-DiskImage -ImagePath "\\172.29.10.216\os\Win11_25H2_English_x64.iso"
+
+    - name: Start Windows 11 setup silently
+      win_command: |
+        E:\setup.exe /auto upgrade /quiet /noreboot /compat IgnoreWarning
+      args:
+        chdir: E:\
+
+    - name: Reboot the machine to complete upgrade
+      win_reboot:
+        msg: "Rebooting to complete Windows 11 upgrade"
+        reboot_timeout: 3600
