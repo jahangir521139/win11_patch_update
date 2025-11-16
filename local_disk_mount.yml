@@ -18,7 +18,7 @@
       win_shell: |
         $iso = "C:\OS\Win11_25H2_English_x64.iso"
         Mount-DiskImage -ImagePath $iso
-      become: yes
+    
 
     - name: Get mounted ISO drive letter
       win_shell: |
