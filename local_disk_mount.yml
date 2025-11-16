@@ -29,11 +29,4 @@
         $drive = "{{ iso_drive.stdout | trim }}"
         Start-Process "$drive`:\setup.exe" -ArgumentList "/auto upgrade /quiet /compat IgnoreWarning" -Wait
 
-    - name: Reboot after upgrade
-      win_reboot:
-        reboot_timeout: 3600
-
-    - name: Dismount ISO
-      win_shell: |
-        Dismount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso"
-      ignore_errors: yes
+   
