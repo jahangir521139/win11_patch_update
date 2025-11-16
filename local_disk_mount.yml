@@ -28,7 +28,6 @@
     - name: Start Windows 11 setup silently
       win_shell: |
         {{ iso_drive.stdout }}:\setup.exe /auto upgrade /quiet /noreboot /compat IgnoreWarning
-      become: yes
 
     - name: Reboot machine to complete upgrade
       win_reboot:
@@ -39,4 +38,3 @@
       win_shell: |
         Dismount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso"
       ignore_errors: yes
-      become: yes
