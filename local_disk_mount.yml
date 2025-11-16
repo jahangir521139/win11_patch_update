@@ -1,6 +1,6 @@
 ---
 - name: In-place upgrade Windows 11 21H2 → 25H2
-  hosts: all
+  hosts: windows
   gather_facts: no
   tasks:
 
