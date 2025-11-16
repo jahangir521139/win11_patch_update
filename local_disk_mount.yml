@@ -18,21 +18,19 @@
       win_shell: |
         $iso = "C:\OS\Win11_25H2_English_x64.iso"
         Mount-DiskImage -ImagePath $iso
-    
 
     - name: Get mounted ISO drive letter
       win_shell: |
         (Get-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso" | Get-Volume).DriveLetter
       register: iso_drive
 
-    - name: Start Windows 11 setup silently
+    - name: Start Windows 11 setup silently and let it reboot
       win_shell: |
-        {{ iso_drive.stdout | trim }}:\setup.exe /auto upgrade /quiet /noreboot /compat IgnoreWarning
+        Start-Process -FilePath "{{ iso_drive.stdout | trim }}:\setup.exe" -ArgumentList "/auto upgrade /quiet /compat IgnoreWarning" -Wait
 
-    - name: Reboot machine to complete upgrade
-      win_reboot:
-        msg: "Rebooting to complete Windows 11 25H2 upgrade"
-        reboot_timeout: 3600
+    - name: Optional: Wait 10 minutes for upgrade to complete
+      pause:
+        minutes: 10
 
     - name: Dismount ISO after upgrade (optional)
       win_shell: |
