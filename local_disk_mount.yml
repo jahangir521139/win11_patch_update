@@ -2,11 +2,12 @@
 - name: In-place upgrade Windows 11 21H2 → 25H2
   hosts: all
   gather_facts: no
+
   tasks:
 
-    - name: Ensure temp directory exists
+    - name: Ensure OS directory exists
       win_file:
-        path: C:\Temp
+        path: C:\OS
         state: directory
 
     - name: Check if ISO exists
@@ -14,25 +15,25 @@
       register: iso_exists
       failed_when: iso_exists.stdout | trim != "True"
 
-    - name: Mount local ISO
+    - name: Mount ISO
       win_shell: |
-        $iso = "C:\OS\Win11_25H2_English_x64.iso"
-        Mount-DiskImage -ImagePath $iso
+        Mount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso"
 
     - name: Get mounted ISO drive letter
       win_shell: |
         (Get-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso" | Get-Volume).DriveLetter
       register: iso_drive
 
-    - name: Start Windows 11 setup silently and let it reboot
+    - name: Run Windows 11 setup (silent)
       win_shell: |
-        Start-Process -FilePath "{{ iso_drive.stdout | trim }}:\setup.exe" -ArgumentList "/auto upgrade /quiet /compat IgnoreWarning" -Wait
+        $drive = "{{ iso_drive.stdout | trim }}"
+        Start-Process "$drive`:\setup.exe" -ArgumentList "/auto upgrade /quiet /compat IgnoreWarning" -Wait
 
-    - name: Optional: Wait 10 minutes for upgrade to complete
-      pause:
-        minutes: 10
+    - name: Reboot after upgrade
+      win_reboot:
+        reboot_timeout: 3600
 
-    - name: Dismount ISO after upgrade (optional)
+    - name: Dismount ISO
       win_shell: |
         Dismount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso"
       ignore_errors: yes
