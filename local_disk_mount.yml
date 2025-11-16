@@ -12,7 +12,7 @@
     - name: Check if ISO exists
       win_shell: Test-Path "C:\OS\Win11_25H2_English_x64.iso"
       register: iso_exists
-      failed_when: iso_exists.stdout != "True"
+      failed_when: iso_exists.stdout | trim != "True"
 
     - name: Mount local ISO
       win_shell: |
