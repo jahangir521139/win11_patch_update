@@ -27,6 +27,6 @@
     - name: Run Windows 11 setup (silent)
       win_shell: |
         $drive = "{{ iso_drive.stdout | trim }}"
-        Start-Process "$drive`:\setup.exe" -ArgumentList "/auto upgrade /quiet /compat IgnoreWarning" -Wait
+        Start-Process "$drive`:\setup.exe" -ArgumentList "/auto upgrade /quiet /noreboot /compat IgnoreWarning /DynamicUpdate disable /eula accept" -Wait
 
    
