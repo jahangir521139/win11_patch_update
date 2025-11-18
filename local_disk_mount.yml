@@ -11,17 +11,17 @@
         state: directory
 
     - name: Check if ISO exists
-      win_shell: Test-Path "C:\OS\Win11_24H2_English_x64.iso"
+      win_shell: Test-Path "C:\OS\Win11_25H2_English_x64.iso"
       register: iso_exists
       failed_when: iso_exists.stdout | trim != "True"
 
     - name: Mount ISO
       win_shell: |
-        Mount-DiskImage -ImagePath "C:\OS\Win11_24H2_English_x64.iso"
+        Mount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64"
 
     - name: Get mounted ISO drive letter
       win_shell: |
-        (Get-DiskImage -ImagePath "C:\OS\Win11_24H2_English_x64.iso" | Get-Volume).DriveLetter
+        (Get-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso" | Get-Volume).DriveLetter
       register: iso_drive
 
     - name: Run Windows 11 setup (silent)
