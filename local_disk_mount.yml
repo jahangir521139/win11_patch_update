@@ -17,7 +17,7 @@
 
     - name: Mount ISO
       win_shell: |
-        Mount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64"
+        Mount-DiskImage -ImagePath "C:\OS\Win11_25H2_English_x64.iso"
 
     - name: Get mounted ISO drive letter
       win_shell: |
